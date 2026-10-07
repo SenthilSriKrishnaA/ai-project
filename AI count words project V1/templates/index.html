@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuMind AI • Enterprise Multi-Document Analyzer</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #0a0e17;
+            --bg-card: rgba(18, 24, 38, 0.85);
+            --bg-card-elevated: #161e2e;
+            --bg-input: rgba(15, 23, 42, 0.65);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(99, 102, 241, 0.4);
+            --border-focus: #6366f1;
+            
+            --primary: #4f46e5;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+            --accent-glow: rgba(79, 70, 229, 0.25);
+            
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.12);
+            --success-border: rgba(16, 185, 129, 0.3);
+
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.12);
+            --warning-border: rgba(245, 158, 11, 0.3);
+
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+            --danger-border: rgba(239, 68, 68, 0.3);
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 26px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding: 30px 16px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* TOP NAVIGATION / STATUS BAR */
+        .navbar {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            margin-bottom: 24px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-gradient);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .nav-badge-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #38bdf8;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #38bdf8;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* MAIN APP CONTAINER */
+        .container {
+            width: 100%;
+            max-width: 960px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 44px 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* HERO HEADER */
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .hero-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 30px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            color: #a5b4fc;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 70%, #94a3b8 100%);
+            -webkit-background-c: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 15.5px;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* SECTION TITLES */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            font-size: 11px;
+            padding: 2px 9px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* UPLOAD DROP ZONE */
+        .dropzone {
+            position: relative;
+            border: 2px dashed rgba(255, 255, 255, 0.16);
+            border-radius: var(--radius-lg);
+            padding: 42px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-input);
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+
+        .dropzone::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .dropzone:hover {
+            border-color: #6366f1;
+            background: rgba(26, 35, 58, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px var(--accent-glow);
+        }
+
+        .dropzone:hover::before {
+            opacity: 1;
+        }
+
+        .dropzone.dragging {
+            border-color: #38bdf8;
+            border-style: solid;
+            background: rgba(14, 165, 233, 0.1);
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.25);
+        }
+
+        .dropzone-icon-wrap {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #818cf8;
+            transition: transform 0.3s ease;
+        }
+
+        .dropzone:hover .dropzone-icon-wrap {
+            transform: scale(1.1) translateY(-2px);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .dropzone-title {
+            font-size: 16.5px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .dropzone-subtitle {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .format-pills {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .format-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            letter-spacing: -0.2px;
+        }
+
+        .format-pill.pdf { color: #f87171; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.25); }
+        .format-pill.word { color: #60a5fa; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.25); }
+        .format-pill.excel { color: #34d399; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); }
+        .format-pill.text { color: #cbd5e1; background: rgba(148, 163, 184, 0.1); border-color: rgba(148, 163, 184, 0.25); }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* SELECTED FILES QUEUE */
+        .file-queue {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+            max-height: 290px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .file-queue::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .file-queue::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        .queue-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            transition: all 0.2s ease;
+        }
+
+        .queue-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(2px);
+        }
+
+        .queue-item-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        .queue-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 5px 9px;
+            border-radius: 6px;
+            min-width: 48px;
+            text-align: center;
+            letter-spacing: -0.3px;
+        }
+
+        .queue-badge.pdf { background: #dc2626; color: white; }
+        .queue-badge.docx, .queue-badge.doc { background: #2563eb; color: white; }
+        .queue-badge.xlsx, .queue-badge.xls { background: #059669; color: white; }
+        .queue-badge.txt { background: #475569; color: white; }
+
+        .queue-name {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 520px;
+        }
+
+        .queue-size {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: 8px;
+        }
+
+        .queue-remove-btn {
+            border: none;
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .queue-remove-btn:hover {
+            background: #ef4444;
+            color: white;
+            transform: scale(1.08);
+        }
+
+        .queue-actions {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -12px;
+            margin-bottom: 24px;
+            padding: 0 4px;
+        }
+
+        .queue-btn-link {
+            background: none;
+            border: none;
+            color: #818cf8;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .queue-btn-link:hover {
+            color: #c7d2fe;
+            text-decoration: underline;
+        }
+
+        .queue-btn-link.danger {
+            color: #f87171;
+        }
+
+        .queue-btn-link.danger:hover {
+            color: #fca5a5;
+        }
+
+        /* SEARCH INPUT BAR */
+        .search-container {
+            margin-bottom: 26px;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon-decor {
+            position: absolute;
+            left: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 120px 18px 52px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .search-input:focus {
+            border-color: #6366f1;
+            background: rgba(22, 30, 49, 0.9);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-hint {
+            position: absolute;
+            right: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+            pointer-events: none;
+        }
+
+        /* ACTION BUTTON */
+        .analyze-button {
+            width: 100%;
+            border: none;
+            padding: 19px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 16.5px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            background: var(--primary-gradient);
+            background-size: 200% auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px -5px var(--accent-glow);
+        }
+
+        .analyze-button:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 35px -5px rgba(99, 102, 241, 0.45);
+        }
+
+        .analyze-button:active {
+            transform: translateY(0);
+        }
+
+        .analyze-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* LIVE PROGRESS STAGE */
+        .progress-card {
+            display: none;
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-card-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-card-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spinner-ring {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(99, 102, 241, 0.25);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
+        }
+
+        .progress-row-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 580px;
+        }
+
+        .progress-badge-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .status-waiting { color: var(--text-muted); background: rgba(255, 255, 255, 0.05); }
+        .status-processing { color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .status-completed { color: #34d399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-failed { color: #f87171; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* SUMMARY BANNER */
+        .summary-banner {
+            display: none;
+            margin-top: 32px;
+            padding: 18px 24px;
+            border-radius: var(--radius-md);
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14.5px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-banner.success {
+            display: flex;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: #34d399;
+        }
+
+        .summary-banner.warning {
+            display: flex;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: #fbbf24;
+        }
+
+        .summary-banner.error {
+            display: flex;
+            background: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            color: #f87171;
+        }
+
+        /* DOCUMENT RESULT CARDS */
+        .results-wrapper {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .doc-card {
+            background: var(--bg-card-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--primary-gradient);
+        }
+
+        .doc-card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .doc-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .doc-card-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .doc-card-title {
+            font-size: 16.5px;
+            font-weight: 700;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        .status-pill {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-pill.success {
+            background: var(--success-bg);
+            color: #34d399;
+            border: 1px solid var(--success-border);
+        }
+
+        .status-pill.warning {
+            background: var(--warning-bg);
+            color: #fbbf24;
+            border: 1px solid var(--warning-border);
+        }
+
+        .status-pill.error {
+            background: var(--danger-bg);
+            color: #f87171;
+            border: 1px solid var(--danger-border);
+        }
+
+        /* METRIC STAT STRIP */
+        .metric-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .metric-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value-word {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .metric-value-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 3px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metric-value-count.found {
+            background: rgba(99, 102, 241, 0.18);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .metric-value-count.zero {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* EXECUTIVE AI SUMMARY BRIEF */
+        .ai-briefing {
+            background: rgba(26, 21, 48, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
+        }
+
+        .ai-briefing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .ai-briefing-title {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #c084fc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-copy-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ai-copy-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-main);
+        }
+
+        .ai-points-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ai-point-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: #e2e8f0;
+        }
+
+        .ai-point-index {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            color: #a855f7;
+            background: rgba(168, 85, 247, 0.12);
+            padding: 2px 7px;
+            border-radius: 5px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .ai-error-box {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid var(--danger-border);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            color: #f87171;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        /* TOAST ALERT */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid var(--border-subtle);
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
+            font-weight: 600;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .footer span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 720px) {
+            .container {
+                padding: 26px 20px;
+            }
+
+            .hero-title {
+                font-size: 26px;
+            }
+
+            .metric-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .queue-name, .progress-row-name {
+                max-width: 220px;
+            }
+
+            .doc-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAV BAR -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="nav-logo-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </div>
+            <span>DocuMind Enterprise</span>
+        </a>
+
+        <div class="nav-badge-pill">
+            <span class="pulse-dot"></span>
+            <span>Ollama AI (Llama 3.2:3B) Ready</span>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+        <!-- HERO -->
+        <header class="hero">
+            <div class="hero-chip">Multi-Document Intelligence Engine</div>
+            <h1 class="hero-title">Document Text & AI Summary Suite</h1>
+            <p class="hero-subtitle">
+                Upload multiple documents simultaneously. Each document undergoes isolated text extraction, independent whole-word frequency counting, and executive 5-point AI summarization.
+            </p>
+        </header>
+
+        <!-- FILE UPLOAD SECTION -->
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Upload Documents</span>
+            </div>
+            <span class="section-badge" id="fileCounter">0 files staged</span>
+        </div>
+
+        <div class="dropzone" id="uploadArea">
+            <div class="dropzone-icon-wrap">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+            </div>
+            <div class="dropzone-title">Drag & drop your files here or click to browse</div>
+            <div class="dropzone-subtitle">Batch process unlimited documents with isolated analysis</div>
+            <div class="format-pills">
+                <span class="format-pill pdf">PDF (.pdf)</span>
+                <span class="format-pill word">Word (.docx, .doc)</span>
+                <span class="format-pill excel">Excel (.xlsx, .xls)</span>
+                <span class="format-pill text">Text (.txt)</span>
+            </div>
+            <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.xlsx,.xls,.txt">
+        </div>
+
+        <!-- STAGED FILES QUEUE -->
+        <div class="file-queue" id="fileQueue"></div>
+
+        <div class="queue-actions" id="queueActions">
+            <button type="button" class="queue-btn-link" onclick="fileInput.click()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add more documents</span>
+            </button>
+            <button type="button" class="queue-btn-link danger" onclick="clearAllFiles()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Clear queue</span>
+            </button>
+        </div>
+
+        <!-- SEARCH WORD INPUT -->
+        <div class="search-container">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <span>Target Word or Phrase</span>
+                </div>
+            </div>
+            <div class="search-input-wrap">
+                <div class="search-icon-decor">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                <input
+                    type="text"
+                    class="search-input"
+                    id="searchWord"
+                    placeholder="Enter search word or phrase (e.g. AI)..."
+                    autocomplete="off"
+                >
+                <div class="search-hint">Press ↵ Enter</div>
+            </div>
+        </div>
+
+        <!-- ANALYZE ACTION BUTTON -->
+        <button class="analyze-button" id="analyzeBtn" onclick="analyzeDocuments()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span id="analyzeBtnText">Analyze Documents</span>
+        </button>
+
+        <!-- REAL-TIME PROGRESS STAGE -->
+        <div class="progress-card" id="progressContainer">
+            <div class="progress-card-header">
+                <div class="progress-card-title">
+                    <div class="spinner-ring"></div>
+                    <span>Processing Document Intelligence Pipeline...</span>
+                </div>
+                <span class="section-badge" id="progressCountBadge">0 / 0</span>
+            </div>
+            <div class="progress-items-list" id="progressList"></div>
+        </div>
+
+        <!-- BATCH SUMMARY BANNER -->
+        <div class="summary-banner" id="summaryBanner">
+            <span id="summaryBannerText"></span>
+            <span id="summaryBannerStats"></span>
+        </div>
+
+        <!-- INDEPENDENT RESULTS LIST -->
+        <div class="results-wrapper" id="resultsSection"></div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span>🔒 Secure Local Document Processing</span>
+        <span>•</span>
+        <span>⚡ Ollama Llama 3.2 AI Acceleration</span>
+        <span>•</span>
+        <span>📊 100% Isolated Outputs</span>
+    </footer>
+
+    <!-- TOAST ALERT -->
+    <div class="toast" id="toast">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toastMsg">Summary copied to clipboard</span>
+    </div>
+
+<script>
+    // State management
+    let selectedFiles = [];
+
+    // Elements
+    const uploadArea = document.getElementById("uploadArea");
+    const fileInput = document.getElementById("fileInput");
+    const fileQueue = document.getElementById("fileQueue");
+    const queueActions = document.getElementById("queueActions");
+    const fileCounter = document.getElementById("fileCounter");
+    const searchWordInput = document.getElementById("searchWord");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const analyzeBtnText = document.getElementById("analyzeBtnText");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressCountBadge = document.getElementById("progressCountBadge");
+    const progressList = document.getElementById("progressList");
+    const summaryBanner = document.getElementById("summaryBanner");
+    const summaryBannerText = document.getElementById("summaryBannerText");
+    const summaryBannerStats = document.getElementById("summaryBannerStats");
+    const resultsSection = document.getElementById("resultsSection");
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+
+    // Click dropzone to open file dialog
+    uploadArea.addEventListener("click", () => fileInput.click());
+
+    // File input change
+    fileInput.addEventListener("change", (e) => {
+        handleFiles(e.target.files);
+        fileInput.value = "";
+    });
+
+    // Drag & Drop
+    uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragging");
+    });
+
+    uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragging");
+    });
+
+    uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragging");
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // Enter key triggers analysis
+    searchWordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            analyzeDocuments();
+        }
+    });
+
+    // Format bytes helper
+    function formatBytes(bytes) {
+        if (!bytes || bytes === 0) return "0 B";
+        const k = 1024;
+        const sizes = ["B", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+    }
+
+    // Process new files
+    function handleFiles(files) {
+        if (!files || files.length === 0) return;
+
+        const allowedExts = [".pdf", ".docx", ".doc", ".xlsx", ".xls", ".txt"];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const ext = "." + file.name.split(".").pop().toLowerCase();
+
+            if (!allowedExts.includes(ext)) {
+                showToast(`"${file.name}" format is unsupported.`);
+                continue;
+            }
+
+            const isDuplicate = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+            if (!isDuplicate) {
+                selectedFiles.push(file);
+            }
+        }
+
+        renderQueue();
+    }
+
+    // Remove single file
+    function removeFile(index) {
+        selectedFiles.splice(index, 1);
+        renderQueue();
+    }
+
+    // Clear all
+    function clearAllFiles() {
+        selectedFiles = [];
+        renderQueue();
+        resetResults();
+    }
+
+    // Render Queue
+    function renderQueue() {
+        fileQueue.innerHTML = "";
+
+        if (selectedFiles.length === 0) {
+            fileQueue.style.display = "none";
+            queueActions.style.display = "none";
+            fileCounter.innerText = "0 files staged";
+            analyzeBtnText.innerText = "Analyze Documents";
+            return;
+        }
+
+        fileQueue.style.display = "flex";
+        queueActions.style.display = "flex";
+        const count = selectedFiles.length;
+        fileCounter.innerText = `${count} file${count > 1 ? "s" : ""} staged`;
+        analyzeBtnText.innerText = `Analyze ${count} Document${count > 1 ? "s" : ""}`;
+
+        selectedFiles.forEach((file, index) => {
+            const ext = file.name.split(".").pop().toLowerCase();
+            const item = document.createElement("div");
+            item.className = "queue-item";
+            item.innerHTML = `
+                <div class="queue-item-left">
+                    <span class="queue-badge ${ext}">${ext}</span>
+                    <span class="queue-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
+                    <span class="queue-size">${formatBytes(file.size)}</span>
+                </div>
+                <button type="button" class="queue-remove-btn" title="Remove file" onclick="removeFile(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            `;
+            fileQueue.appendChild(item);
+        });
+    }
+
+    // Reset results & progress
+    function resetResults() {
+        progressContainer.style.display = "none";
+        progressList.innerHTML = "";
+        summaryBanner.className = "summary-banner";
+        summaryBanner.style.display = "none";
+        resultsSection.innerHTML = "";
+    }
+
+    // Execute Analysis
+    async function analyzeDocuments() {
+        const searchWord = searchWordInput.value.trim();
+
+        if (selectedFiles.length === 0) {
+            showToast("Please stage at least one document first.");
+            uploadArea.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        if (!searchWord) {
+            showToast("Please enter a target word or phrase.");
+            searchWordInput.focus();
+            return;
+        }
+
+        resetResults();
+
+        // Lock button
+        analyzeBtn.disabled = true;
+        const total = selectedFiles.length;
+        analyzeBtnText.innerText = `Analyzing ${total} Document${total > 1 ? "s" : ""}...`;
+
+        // Setup real-time tracker
+        progressContainer.style.display = "block";
+        progressCountBadge.innerText = `0 / ${total}`;
+        progressList.innerHTML = "";
+
+        selectedFiles.forEach((file, idx) => {
+            const row = document.createElement("div");
+            row.className = "progress-row";
+            row.id = `prog-row-${idx}`;
+            row.innerHTML = `
+                <div class="progress-row-name">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+                    <span>${escapeHtml(file.name)}</span>
+                </div>
+                <div class="progress-badge-status status-waiting" id="prog-status-${idx}">
+                    <span>○ Waiting</span>
+                </div>
+            `;
+            progressList.appendChild(row);
+        });
+
+        let successCount = 0;
+        let failCount = 0;
+
+        // Process each document independently
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            const statusBadge = document.getElementById(`prog-status-${i}`);
+
+            if (statusBadge) {
+                statusBadge.className = "progress-badge-status status-processing";
+                statusBadge.innerHTML = `<div class="spinner-ring" style="width:12px; height:12px; border-width:2px;"></div><span>Processing</span>`;
+            }
+
+            const formData = new FormData();
+            formData.append("files[]", file);
+            formData.append("search_word", searchWord);
+
+            try {
+                const response = await fetch("/analyze", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    const res = data.results[0];
+
+                    if (res.status === "success" || res.status === "warning") {
+                        successCount++;
+                        if (statusBadge) {
+                            statusBadge.className = "progress-badge-status status-completed";
+                            statusBadge.innerHTML = `<span>✓ Completed</span>`;
+                        }
+                    } else {
+                        failCount++;
+                        if (statusBadge) {
+                            statusBadge.className = "progress-badge-status status-failed";
+                            statusBadge.innerHTML = `<span>✕ Failed</span>`;
+                        }
+                    }
+
+                    renderDocCard(res);
+                } else {
+                    failCount++;
+                    if (statusBadge) {
+                        statusBadge.className = "progress-badge-status status-failed";
+                        statusBadge.innerHTML = `<span>✕ Failed</span>`;
+                    }
+                    renderDocCard({
+                        filename: file.name,
+                        file_type: file.name.split(".").pop().toLowerCase(),
+                        word: searchWord,
+                        word_count: 0,
+                        summary: "",
+                        status: "error",
+                        error: data.message || "Failed to process document"
+                    });
+                }
+            } catch (err) {
+                failCount++;
+                if (statusBadge) {
+                    statusBadge.className = "progress-badge-status status-failed";
+                    statusBadge.innerHTML = `<span>✕ Network Error</span>`;
+                }
+                renderDocCard({
+                    filename: file.name,
+                    file_type: file.name.split(".").pop().toLowerCase(),
+                    word: searchWord,
+                    word_count: 0,
+                    summary: "",
+                    status: "error",
+                    error: `Communication error: ${err.message}`
+                });
+            }
+
+            progressCountBadge.innerText = `${i + 1} / ${total}`;
+        }
+
+        // Render overall summary banner
+        renderSummaryBanner(successCount, failCount, total);
+
+        // Re-enable button
+        analyzeBtn.disabled = false;
+        analyzeBtnText.innerText = `Analyze ${total} Document${total > 1 ? "s" : ""}`;
+    }
+
+    // Render Summary Banner
+    function renderSummaryBanner(success, failed, total) {
+        summaryBanner.style.display = "flex";
+
+        if (failed === 0) {
+            summaryBanner.className = "summary-banner success";
+            summaryBannerText.innerHTML = `✓ Batch Complete: All ${success} document${success > 1 ? "s" : ""} successfully analyzed.`;
+            summaryBannerStats.innerText = `100% SUCCESS`;
+        } else if (success > 0) {
+            summaryBanner.className = "summary-banner warning";
+            summaryBannerText.innerHTML = `⚠ Batch Complete: ${success} analyzed, ${failed} failed with notices.`;
+            summaryBannerStats.innerText = `${success}/${total} PROCESSED`;
+        } else {
+            summaryBanner.className = "summary-banner error";
+            summaryBannerText.innerHTML = `✕ All ${failed} document${failed > 1 ? "s" : ""} failed to analyze.`;
+            summaryBannerStats.innerText = `0/${total} SUCCESS`;
+        }
+    }
+
+    // Render Individual Document Card
+    function renderDocCard(res) {
+        const card = document.createElement("article");
+        card.className = "doc-card";
+
+        const isSuccess = res.status === "success";
+        const isWarning = res.status === "warning";
+        const isError = res.status === "error";
+
+        let statusHtml = `<span class="status-pill success"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Successfully Processed</span>`;
+        if (isWarning) {
+            statusHtml = `<span class="status-pill warning"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Processed With Notice</span>`;
+        } else if (isError) {
+            statusHtml = `<span class="status-pill error"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Extraction Failed</span>`;
+        }
+
+        const countBadgeClass = res.word_count > 0 ? "found" : "zero";
+        const countText = res.word_count > 0 
+            ? `${res.word_count} occurrence${res.word_count > 1 ? "s" : ""}`
+            : "0 (Not Found)";
+
+        let briefHtml = "";
+        if (isSuccess && res.summary) {
+            // Split summary lines into clean executive points
+            const lines = res.summary.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+            let pointsListHtml = "";
+            
+            lines.forEach((line, idx) => {
+                // Strip existing numbering e.g. "1. "
+                let cleanLine = line.replace(/^\d+[\.\)]\s*/, "");
+                let indexPill = String(idx + 1).padStart(2, '0');
+                pointsListHtml += `
+                    <div class="ai-point-item">
+                        <span class="ai-point-index">${indexPill}</span>
+                        <span>${escapeHtml(cleanLine)}</span>
+                    </div>
+                `;
+            });
+
+            briefHtml = `
+                <div class="ai-briefing">
+                    <div class="ai-briefing-header">
+                        <div class="ai-briefing-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5h-2v-2h2zm0-4.5h-2V7h2z"></path></svg>
+                            <span>Executive 5-Point AI Briefing • Llama 3.2</span>
+                        </div>
+                        <button type="button" class="ai-copy-btn" onclick="copyText('${encodeURIComponent(res.summary)}')">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span>Copy Brief</span>
+                        </button>
+                    </div>
+                    <div class="ai-points-container">
+                        ${pointsListHtml}
+                    </div>
+                </div>
+            `;
+        } else if (isWarning) {
+            briefHtml = `
+                <div class="ai-briefing" style="background: rgba(245, 158, 11, 0.06); border-color: var(--warning-border);">
+                    <div class="ai-briefing-header">
+                        <div class="ai-briefing-title" style="color: #fbbf24;">
+                            <span>⚠️ AI Analysis Notice</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 13.5px; color: #fde68a; line-height: 1.5;">${escapeHtml(res.summary || res.error || "Notice during AI summarization")}</div>
+                </div>
+            `;
+        } else {
+            briefHtml = `
+                <div class="ai-error-box">
+                    <div style="font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                        <span>Document Processing Error</span>
+                    </div>
+                    <div>${escapeHtml(res.error || "Unable to extract text or process document.")}</div>
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="doc-card-header">
+                <div class="doc-card-left">
+                    <span class="queue-badge ${escapeHtml(res.file_type)}">${escapeHtml(res.file_type)}</span>
+                    <h3 class="doc-card-title">${escapeHtml(res.filename)}</h3>
+                </div>
+                ${statusHtml}
+            </div>
+
+            <div class="metric-strip">
+                <div class="metric-box">
+                    <span class="metric-label">Target Word</span>
+                    <span class="metric-value-word">${escapeHtml(res.word)}</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-label">Occurrences</span>
+                    <span class="metric-value-count ${countBadgeClass}">${countText}</span>
+                </div>
+            </div>
+
+            ${briefHtml}
+        `;
+
+        resultsSection.appendChild(card);
+    }
+
+    // Copy to clipboard
+    function copyText(encodedText) {
+        const text = decodeURIComponent(encodedText);
+        navigator.clipboard.writeText(text).then(() => {
+            showToast("Summary copied to clipboard!");
+        }).catch(() => {
+            showToast("Unable to copy to clipboard.");
+        });
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+        toastMsg.innerText = msg;
+        toast.classList.add("show");
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+    // HTML Escape
+    function escapeHtml(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+
+</body>
+</html>
