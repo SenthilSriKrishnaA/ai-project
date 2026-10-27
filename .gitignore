@@ -9,3 +9,17 @@ node_modules/
 */node_modules/
 .pytest_cache/
 *.log
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated uploads
+uploads/
+*/uploads/
+
+# Build files
+build/
+dist/
+*.egg-info/
